@@ -1,0 +1,24 @@
+{
+  "name": "creatingserver",
+  "version": "1.0.0",
+  "description": "Creating of server using node js",
+  "main": "creatingServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon creatingServer.js",
+    "start-server": "node creatingServer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShivpujanKr-NITJsr/NodeExpressJsWorld.git"
+  },
+  "author": "Shivpujan Kumar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShivpujanKr-NITJsr/NodeExpressJsWorld/issues"
+  },
+  "homepage": "https://github.com/ShivpujanKr-NITJsr/NodeExpressJsWorld#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
