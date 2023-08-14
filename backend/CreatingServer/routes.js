@@ -10,6 +10,7 @@ const requestHandler=(req,res)=>{
         res.write('<body><form action="/message" method="post"><input type="text" name="message"><button type="submit">Send</button></form></body>')
         res.write('</html>')
         return res.end();
+        // res.end()
     }
     if (url === '/message' && method === 'POST') {
         const body = [];
@@ -20,17 +21,13 @@ const requestHandler=(req,res)=>{
         return req.on('end', () => {
             const parseBody = Buffer.concat(body).toString();
             console.log(parseBody);
-            const message = parseBody.split('=')[1];
+            const message = parseBody.split('=')[0];
     
             fs.writeFile('message.txt', message, err => {
                 res.statusCode = 302;
-    
                 res.write('<html>');
-    
                 res.write('<head><title>Enter Message</title></head>')
-    
                 res.write('<body><h1></h1><p>' + message + '</p>');
-    
                 res.write('<form action="/message" method="post"><input type="text" name="message"><button type="submit">Send</button></form></body>')
                 res.write('</html>')
                 return res.end();
