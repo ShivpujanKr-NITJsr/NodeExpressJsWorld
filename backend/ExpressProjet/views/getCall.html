@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body >
+    <p style="margin:20px;color: orange;"><u>YAV</u></p>
+
+    <div style="justify-content: center;display: flex;">
+    <form style=" border: 2px solid orange; width:600px ;padding: 10px;border-radius: 10px;" 
+    onsubmit="gettingData(event)" action="/success">
+
+        <h3  style="text-align: center;color:orange">Book a call</h3><br><br>
+        <p style="text-align: center;"> Book a call slot and our representative will 
+            call you within 1 hr of selected time</p>
+            <hr>
+        <label for="name">Name:</label><br>
+        <input type="text" name="name" id="name" ><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" name="email" id="email"><br>
+        
+        <br>
+
+        <button style="color:white; background-color: orange;text-align: center;margin-top:10px;border-radius: 5px;width: 500px;">GET A CALL</br>
+        
+    </form>
+
+    </div>
+
+    <script>
+        function gettingData(event){
+    console.log(document.getElementById("name").value+" "+
+    document.getElementById("email").value+" "+
+    document.getElementById("phone").value+" "+
+    document.getElementById("time").value+" "+
+    document.getElementById("date"));
+
+}
+    </script>
+
+        
+    </script>
+</body>
+</html>
