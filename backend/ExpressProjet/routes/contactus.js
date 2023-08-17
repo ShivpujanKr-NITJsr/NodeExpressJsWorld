@@ -1,18 +1,11 @@
 const express=require('express');
-const path=require('path')
-const rootDir=require('../util/path')
+const contactingController=require('../controllers/productsadd')
 
 
 const router=express.Router();
 
-router.get('/contactus',(req,res,next)=>{
-    res.sendFile(path.join(rootDir,'views','getCall.html'))
-    
+router.get('/contactus',contactingController.contactingUs)
 
-})
-
-router.get('/success',(req,res,next)=>{
-    res.send('Form submitted successfully');
-})
+router.get('/success',contactingController.onsuccess)
 
 module.exports = router;
