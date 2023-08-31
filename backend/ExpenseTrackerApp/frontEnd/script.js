@@ -21,7 +21,7 @@ function checking(event){
         axios.post(url,obj)
         .then(res=>{
             // document.getElementById('error-msg').textContent=``
-            console.log('loginned user successfully')
+            console.log(res.data.msg)
             alert(res.data.msg)
             
             
