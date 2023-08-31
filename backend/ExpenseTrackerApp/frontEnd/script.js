@@ -20,7 +20,7 @@ function checking(event){
 
         axios.post(url,obj)
         .then(res=>{
-            // document.getElementById('error-msg').textContent=``
+            document.getElementById('error-msg').textContent=``
             console.log(res.data.msg)
             alert(res.data.msg)
             
@@ -29,7 +29,7 @@ function checking(event){
         .catch(err=>{
             console.log('i got error while logging')
             
-            // document.getElementById('error-msg').textContent=`${err}`
+            document.getElementById('error-msg').textContent=`${err}`
 
             alert(`${err}`)
             

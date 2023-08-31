@@ -1,5 +1,7 @@
 const User=require('./models')
 
+const bcrypt=require('bcrypt')
+
 exports.creating=(req,res,next)=>{
     const uname=req.body.name;
     const uemail=req.body.email;
@@ -12,13 +14,16 @@ exports.creating=(req,res,next)=>{
                 // throw new Error('User with this email already exists');
                 res.status(403).json({Error:'Error:Request failed with status code 403'})
             }else{
-                User.create({
-                    name:uname,
-                    email:uemail,
-                    password:upassword
-                }).then(result=>res.json({message:'User created now click on existing login and please login through that'}))
+                bcrypt.hash(upassword, 10, (err,hash)=>{
+                    User.create({
+                        name:uname,
+                        email:uemail,
+                        password:hash
+                    }).then(result=>res.json({message:'Successfully created new user'}))
+                    
+    
+                })
                 
-
             }
             
         
@@ -38,11 +43,19 @@ exports.logging=(req,res,next)=>{
                 // throw new Error('User with this email already exists');
                 // console.log(re)
                 // res.status(403).json({Error:'Error:Request failed with status code 403'})
-                if(re[0].password==upassword){
-                    res.json({msg:'User login sucessful'})
-                }else{
-                    res.status(401).json({msg:'User not authorized'})
-                }
+
+                bcrypt.compare(upassword, re[0].password, function(err, result) {
+                    if(result==true){
+                        res.json({msg:'User login sucessful'})
+                    }else{
+                        res.status(401).json({msg:'User not authorized'})
+                    }
+                });
+                // if(re[0].password==upassword){
+                //     res.json({msg:'User login sucessful'})
+                // }else{
+                //     res.status(401).json({msg:'User not authorized'})
+                // }
             }else{
                 res.status(404).json({msg:'User not found'})
                 
