@@ -39,12 +39,12 @@ exports.logging=(req,res,next)=>{
                 // console.log(re)
                 // res.status(403).json({Error:'Error:Request failed with status code 403'})
                 if(re[0].password==upassword){
-                    res.json({msg:'loginned successfully! :)'})
+                    res.json({msg:'User login sucessful'})
                 }else{
-                    res.json({msg:'password did not match'})
+                    res.status(401).json({msg:'User not authorized'})
                 }
             }else{
-                res.json({msg:'user does not exist'})
+                res.status(404).json({msg:'User not found'})
                 
 
             }
