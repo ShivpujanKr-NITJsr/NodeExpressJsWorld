@@ -26,3 +26,31 @@ exports.creating=(req,res,next)=>{
         .catch(err=>console.log(err))
 
 }
+
+exports.logging=(req,res,next)=>{
+    const uemail=req.body.email;
+    const upassword=req.body.password;
+
+    User.findAll({where:{email:uemail}})
+        .then(re=>{
+
+            if(re.length>0){
+                // throw new Error('User with this email already exists');
+                // console.log(re)
+                // res.status(403).json({Error:'Error:Request failed with status code 403'})
+                if(re[0].password==upassword){
+                    res.json({msg:'loginned successfully! :)'})
+                }else{
+                    res.json({msg:'password did not match'})
+                }
+            }else{
+                res.json({msg:'user does not exist'})
+                
+
+            }
+            
+        
+        })
+        .catch(err=>console.log(err))
+
+}
