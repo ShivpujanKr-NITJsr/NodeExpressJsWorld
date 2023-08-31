@@ -1,4 +1,6 @@
-const User=require('./models')
+const {Expense,User}=require('./models')
+
+// const User=require('./models')
 
 const bcrypt=require('bcrypt')
 
@@ -46,9 +48,9 @@ exports.logging=(req,res,next)=>{
 
                 bcrypt.compare(upassword, re[0].password, function(err, result) {
                     if(result==true){
-                        res.json({msg:'User login sucessful'})
+                        res.json({success:true,msg:'User login successful'})
                     }else{
-                        res.status(401).json({msg:'User not authorized'})
+                        res.status(401).json({success:false,msg:'User not authorized'})
                     }
                 });
                 // if(re[0].password==upassword){
@@ -57,7 +59,7 @@ exports.logging=(req,res,next)=>{
                 //     res.status(401).json({msg:'User not authorized'})
                 // }
             }else{
-                res.status(404).json({msg:'User not found'})
+                res.status(404).json({success:false,msg:'User not found'})
                 
 
             }
@@ -66,4 +68,26 @@ exports.logging=(req,res,next)=>{
         })
         .catch(err=>console.log(err))
 
+}
+
+exports.getexpenses=(req,res,next)=>{
+    Expense.findAll()
+        .then(result=>{
+            res.json(result)
+        }).catch(err=>console.log(err))
+}
+
+exports.delexpenses=(req,res,next)=>{
+    Expense.findAll({where:{id:req.params.id}})
+        .then(result=>{
+            result[0].destroy();
+            res.json(result);
+        }).catch(err=>console.log(err))
+}
+
+exports.addexpense=(req,res,next)=>{
+    Expense.create({price:req.body.price,description:req.body.description,category:req.body.category})
+        .then(result=>{
+            res.json(result)
+        }).catch(err=>console.log(err))
 }

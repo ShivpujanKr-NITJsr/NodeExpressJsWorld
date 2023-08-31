@@ -23,7 +23,14 @@ function checking(event){
             document.getElementById('error-msg').textContent=``
             console.log(res.data.msg)
             alert(res.data.msg)
-            
+            if(res.data.success==true){
+                document.getElementById('form').action='./index.html';
+                document.getElementById('form').method='get'
+                document.getElementById('form').submit();
+                return true;
+            }else{
+                return false
+            }
             
         })
         .catch(err=>{
@@ -32,6 +39,7 @@ function checking(event){
             document.getElementById('error-msg').textContent=`${err}`
 
             alert(`${err}`)
+            return false
             
         }
         )
