@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <title>SignUp Login Page</title>
+
+    <style>
+        .username-err ,.email-err,.password-err{
+            color: red;
+            font: 14px;
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" style="display: flex; justify-content: center; padding-top: 50px;">
+        <div style="border: solid red; border-radius: 10px; padding: 100px;" id="paren">
+            
+            <!-- action="user/login" -->
+            <form id='form' onsubmit="return checking(event)" method="post"  >          
+                <div>
+                    <label for="name">Enter your name: </label><br>
+                    <input type="text" name="username" id="username" >
+                    <p class="error username-err"></p>
+                </div>
+                <div>
+                    <label for="email">Enter your email: </label><br>
+                    <input type="text" name="email" id="email">
+                    <p class="error email-err"></p>
+                </div>
+                <div>
+                    <label for="password">Password: </label><br>
+                    <input type="password" name="password" id="password">
+                    <p class="error password-err"></p>
+                </div>
+
+                <div style="padding-top: 15px;">
+                    <button type="submit">Submit</button>
+                </div>
+
+            </form>
+
+            <div style="padding-top: 10px;" id="'loginlink"><a href="./login.html">Existing User-Login</a></div>
+            <div style="color:red;" id="error-msg"></div>
+        </div>
+    </div>
+
+    <script src="main.js">
+        
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+</body>
+</html>

@@ -1,19 +1,43 @@
 
 const url='http://localhost:3000/user/signup'
 function checking(event){
-
+    event.preventDefault();
     if(!check(event)){
-        return false;
+        
+        // return false;
+        console.log('not filled correctly')
     }else{
         
         const name = document.getElementById('username');
         const email = document.getElementById('email');
         const password = document.getElementById('password');
         const obj={
-            name,email,password
+            name:name.value,email:email.value,password:password.value
         }
+        name.value=''
+        email.value='';password.value='';
+        // console.log('filled correctly',obj.email)
+        
 
-        axios.post(url,obj);
+        axios.post(url,obj)
+        .then(res=>{
+            console.log('created user successfully')
+            document.getElementById('error-msg').textContent=''
+            document.getElementById('form').action='./login.html'
+            //
+            document.getElementById('form').method='get'
+            document.getElementById('form').submit()
+            return true;
+        })
+        .catch(err=>{
+            console.log('i got error while posting')
+            
+            document.getElementById('error-msg').textContent=`${err}`
+            return false;
+        }
+        )
+        
+        // return true;
     }
 }
 

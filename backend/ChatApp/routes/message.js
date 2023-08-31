@@ -33,9 +33,9 @@ router.get('/', (req, res, next) => {
 
 router.post('/',(req,res,next)=>{
    // data.push(`{${req.body.username}:${req.body.msg} }`)
-    console.log(req.body.message);
-
-    fs.writeFile('datas.txt',`${req.body.username}:${req.body.message} `,{flag:'a'},(err)=>{    //flag:'a' is for append
+   console.log(req.body.message);
+   
+   fs.writeFile('datas.txt',`${req.body.username}:${req.body.message} `,{flag:'a'},(err)=>{    //flag:'a' is for append
         err ? console.log(err) : res.redirect('/');
     })
 
