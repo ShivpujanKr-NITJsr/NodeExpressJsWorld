@@ -1,5 +1,6 @@
 const {Expense,User}=require('./models')
 
+const jwt=require('jsonwebtoken')
 // const User=require('./models')
 
 const bcrypt=require('bcrypt')
@@ -48,7 +49,9 @@ exports.logging=(req,res,next)=>{
 
                 bcrypt.compare(upassword, re[0].password, function(err, result) {
                     if(result==true){
-                        res.json({success:true,msg:'User login successful'})
+                        let token = jwt.sign(re[0].id, 'shhhhh');
+                        
+                        res.json({success:true,msg:'User login successful',token:token})
                     }else{
                         res.status(401).json({success:false,msg:'User not authorized'})
                     }
@@ -61,7 +64,6 @@ exports.logging=(req,res,next)=>{
             }else{
                 res.status(404).json({success:false,msg:'User not found'})
                 
-
             }
             
         
@@ -71,7 +73,7 @@ exports.logging=(req,res,next)=>{
 }
 
 exports.getexpenses=(req,res,next)=>{
-    Expense.findAll()
+    Expense.findAll({where:{UserId:req.iduse}})
         .then(result=>{
             res.json(result)
         }).catch(err=>console.log(err))
@@ -86,7 +88,16 @@ exports.delexpenses=(req,res,next)=>{
 }
 
 exports.addexpense=(req,res,next)=>{
-    Expense.create({price:req.body.price,description:req.body.description,category:req.body.category})
+    const token=req.body.token;
+    let id;
+    jwt.verify(token, 'shhhhh', function(err, decoded) {
+        // console.log(decoded.foo) // bar
+        if(err){
+            res.status(500).json({success:false})
+        }
+        id=decoded;
+      });
+    Expense.create({price:req.body.price,description:req.body.description,category:req.body.category,UserId:id})
         .then(result=>{
             res.json(result)
         }).catch(err=>console.log(err))

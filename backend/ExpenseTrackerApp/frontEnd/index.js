@@ -5,11 +5,12 @@ function saveToDataBaseStorage(event){
 
     const description=event.target.description.value;
     const category=event.target.category.value;
-
+    const token=localStorage.getItem('token')
     const obj={
         price,
         description,
-        category
+        category,
+        token
     }
     axios.post("http://127.0.0.1:3000/expenses/add-expense",obj)
         .then((response)=>{
@@ -26,7 +27,11 @@ function saveToDataBaseStorage(event){
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    axios.get("http://127.0.0.1:3000/expenses")
+    const headers = {
+        'Authorization': localStorage.getItem('token'),
+        // 'Content-Type': 'application/json'
+      };
+    axios.get("http://127.0.0.1:3000/expenses/getexpense",{ headers })
         .then((res)=>{
 
             console.log(res)
@@ -55,7 +60,7 @@ function showUserOnScreen(obj){
         
         const tim=obj.time;
 
-        axios.delete(`http://127.0.0.1:3000/expenses/${obj.id}`)
+        axios.delete(`http://127.0.0.1:3000/expenses/deleteexpense/${obj.id}`)
             .then(res=>(console.log('done')))
             .catch(err=>console.log(err));
       

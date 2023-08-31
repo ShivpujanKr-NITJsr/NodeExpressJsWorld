@@ -27,6 +27,8 @@ function checking(event){
                 document.getElementById('form').action='./index.html';
                 document.getElementById('form').method='get'
                 document.getElementById('form').submit();
+                localStorage.setItem('token',res.data.token);
+                // console.log(res.data.token)
                 return true;
             }else{
                 return false
