@@ -22,7 +22,8 @@ const User = sequelize.define('User',{
     password:{
         type:Sequelize.STRING,
         allowNull:false
-    }
+    },
+    ispremiumuser:Sequelize.STRING
 })
 
 const Expense = sequelize.define('expense', {
@@ -49,4 +50,24 @@ const Expense = sequelize.define('expense', {
 }
 )
 
-module.exports={Expense,User};
+const Premium= sequelize.define('premium',{
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+    },
+    // price: {
+    //     type: Sequelize.INTEGER,
+    //     allowNull: false
+    // },
+
+    paymentid:Sequelize.STRING,
+    orderid:Sequelize.STRING,
+    status:Sequelize.STRING,
+
+
+})
+
+// Premium.sync({force:true})
+module.exports={Expense,User,Premium};
