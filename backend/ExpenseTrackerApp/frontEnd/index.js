@@ -195,8 +195,8 @@ function showLeaderBoard(){
         .then(res=>{
 
             let ans=res.data;
-            ans.sort((a, b) => b.expense - a.expense);
-            console.log(res)
+            // ans.sort((a, b) => b.expense - a.expense);
+            // console.log(res)
             for(let i=0;i<res.data.length;i++){
                 const p=document.createElement('li');
                 p.textContent="Name - "+`${ans[i].name}`+"   "+'Total Expense - '+`${ans[i].expense}`

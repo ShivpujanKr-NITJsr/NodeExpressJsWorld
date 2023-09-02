@@ -1,5 +1,6 @@
 const { Expense, User, Premium } = require('./models')
 
+const sequelize=require('./databasecon')
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken')
@@ -187,8 +188,8 @@ exports.updatingPremiumStatus = async(req, res, next) => {
 
 }
 
-exports.leaderboardShow= (req,resp,next)=>{
-    let Users=[];
+exports.leaderboardShow= async(req,resp,next)=>{
+    // let Users=[];
     // User.findAll()
     //     .then(res=>{
     //         for(let i=0;i<res.length;i++){
@@ -227,23 +228,43 @@ exports.leaderboardShow= (req,resp,next)=>{
 
     // }
 
-    User.findAll()
-        .then(res=>{
-            let promises=res.map(user=>{
-                return Expense.findAll({where:{UserId:user.id}})
-                    .then(exp=>{
-                        const sum = exp.reduce((sumtotal, expense) => sumtotal + expense.price, 0);
-                        return {
-                            name:user.name,
-                            expense:sum
-                        }
-                    })
-            })
-            return Promise.all(promises)
-        }).then(results=>{
-            resp.status(200).json(results);
+    // User.findAll()         //working
+    //     .then(res=>{
+    //         let promises=res.map(user=>{
+    //             return Expense.findAll({where:{UserId:user.id}})
+    //                 .then(exp=>{
+    //                     const sum = exp.reduce((sumtotal, expense) => sumtotal + expense.price, 0);
+    //                     return {
+    //                         name:user.name,
+    //                         expense:sum
+    //                     }
+    //                 })
+    //         })
+    //         return Promise.all(promises)
+    //     }).then(results=>{
+    //         resp.status(200).json(results);
+    //     })
+    //     .catch(err => console.log(err));
+    try{
+        const userss=await User.findAll({
+            attributes :['id','name',[sequelize.fn('sum', sequelize.col('expenses.price')),'expense']],
+            include :[
+                {
+                    model: Expense,
+                    attributes:[]
+                }
+            ],
+            group:['user.id'],
+            order:[['expense','DESC']]
         })
-        .catch(err => console.log(err));
-
+        console.log(userss)
+        resp.status(200).json(userss)
+        
+    }catch(err){
+        console.log(err);
+        resp.status(500).json(err)
+    }
+    
 
 }
+
