@@ -17,4 +17,6 @@ router.get('/premiumroute/buypremium',Authorization,controllers.premiumBuy)
 
 router.post('/premiumroute/updatetransactionstatus',Authorization,controllers.updatingPremiumStatus)
 
+router.get('/premiumroute/leaderboardshow',controllers.leaderboardShow)
+
 module.exports=router;

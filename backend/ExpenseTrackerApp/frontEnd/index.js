@@ -16,6 +16,10 @@ function saveToDataBaseStorage(event){
         .then((response)=>{
             showUserOnScreen(response.data);
             // console.log(response);
+            console.log('showing leaderboard')
+            if(document.getElementById('leaderboard').childElementCount!=0){
+                showLeaderBoard()
+            }
         })
         .catch(err=>{
             document.body.innerHTML=err;
@@ -35,7 +39,7 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
     axios.get("http://127.0.0.1:3000/premiumroute/buypremium",{ headers })
         .then((res)=>{
 
-            // console.log(res.data)
+            // console.log(res.data.order.id)
 
             var options={
                 'key_id':res.data.key_id,
@@ -43,10 +47,27 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
 
                 'handler':async function(response){
 
-                    await axios.post(`http://localhost:3000/premiumroute/updatetransactionstatus`,{
+                    const premium=await axios.post(`http://localhost:3000/premiumroute/updatetransactionstatus`,{
                         order_id:options.order_id,
                         payment_id: response.razorpay_payment_id,
                     },{headers:{'Authorization': localStorage.getItem('token')}})
+
+                    localStorage.setItem('ispremiumuser','1');
+
+                    document.getElementById('rzp-button1').style.display='none';
+                    document.getElementById('rzp-button1').textContent='';
+                    document.getElementById('premiumuser').style.display='block';
+                    document.getElementById('premiumuser').textContent='you are now premium user';
+                    const leaderboard=document.createElement('button');
+                    
+                    leaderboard.style.marginLeft='20px'
+                    leaderboard.style.border='1px black rounded'
+                    leaderboard.style.borderRadius='5px'
+                    leaderboard.textContent='show leaderboard'
+                    leaderboard.style.width ='auto'
+
+                    leaderboard.addEventListener('click',showLeaderBoard)
+                    document.getElementById('premiumuser').appendChild(leaderboard)
 
                     alert('You are a premium user now')
                 }
@@ -78,6 +99,25 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+    if(localStorage.getItem('ispremiumuser')==='1'){
+        document.getElementById('rzp-button1').style.display='none';
+        document.getElementById('rzp-button1').textContent='';
+        document.getElementById('premiumuser').style.display='block';
+        document.getElementById('premiumuser').innerHTML='<b>You are now premium user</b>';
+        const leaderboard=document.createElement('button');
+        
+        leaderboard.style.marginLeft='20px'
+        // leaderboard.style.border='1px black rounded'
+        leaderboard.style.borderRadius='4px'
+        leaderboard.textContent='show leaderboard'
+        leaderboard.style.width ='auto'
+        
+        leaderboard.addEventListener('click',showLeaderBoard)
+        document.getElementById('premiumuser').appendChild(leaderboard)
+
+    }
+    
+
     const headers = {
         'Authorization': localStorage.getItem('token'),
         // 'Content-Type': 'application/json'
@@ -90,13 +130,17 @@ document.addEventListener("DOMContentLoaded",()=>{
 
             for(var i=0; i<res.data.length;i++){
                 showUserOnScreen(res.data[i])
+
             }
+            // showLeaderBoard()
         })
         .catch(err=>console.log(err))
    
 })
 
+
 function showUserOnScreen(obj){
+
     const parentElemen=document.getElementById('listofitems');
     const children=document.createElement('li');
 
@@ -113,7 +157,14 @@ function showUserOnScreen(obj){
         const tim=obj.time;
 
         axios.delete(`http://127.0.0.1:3000/expenses/deleteexpense/${obj.id}`)
-            .then(res=>(console.log('done')))
+            .then(res=>{
+                console.log('done')
+                // showLeaderBoard()
+
+                if(document.getElementById('leaderboard').innerHTML!=''){
+                    showLeaderBoard()
+                }
+            })
             .catch(err=>console.log(err));
       
         parentElemen.removeChild(children)
@@ -122,5 +173,38 @@ function showUserOnScreen(obj){
     children.appendChild(deletebtn)
 
     parentElemen.appendChild(children)
+}
+
+function showLeaderBoard(){
+    const leader=document.getElementById('leaderboard')
+
+    // leader.textContent='';
+
+    while (leader.firstChild) {
+        leader.removeChild(leader.firstChild);
+    }
+    const h=document.createElement('h2');
+
+    h.textContent='Leader Board'
+
+    leader.appendChild(h)
+    
+    // leader.classList='012'
+    // console.log('showing leaderboard');
+    axios.get('http://localhost:3000/premiumroute/leaderboardshow')
+        .then(res=>{
+
+            let ans=res.data;
+            ans.sort((a, b) => b.expense - a.expense);
+            console.log(res)
+            for(let i=0;i<res.data.length;i++){
+                const p=document.createElement('li');
+                p.textContent="Name - "+`${ans[i].name}`+"   "+'Total Expense - '+`${ans[i].expense}`
+                leaderboard.appendChild(p)
+            }
+            console.log(res);
+        }).catch(err=>console.log(err))
+
+   
 }
 

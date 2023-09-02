@@ -28,7 +28,8 @@ function checking(event){
                 document.getElementById('form').method='get'
                 document.getElementById('form').submit();
                 localStorage.setItem('token',res.data.token);
-                // console.log(res.data.token)
+                localStorage.setItem('ispremiumuser',res.data.ispremiumuser);
+                console.log(res.data.ispremiumuser)
                 return true;
             }else{
                 return false
