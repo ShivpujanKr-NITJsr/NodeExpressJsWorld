@@ -199,7 +199,7 @@ function showLeaderBoard(){
             // console.log(res)
             for(let i=0;i<res.data.length;i++){
                 const p=document.createElement('li');
-                p.textContent="Name - "+`${ans[i].name}`+"   "+'Total Expense - '+`${ans[i].expense}`
+                p.textContent="Name - "+`${ans[i].name}`+"   "+'Total Expense - '+`${ans[i].totalexpense}`
                 leaderboard.appendChild(p)
             }
             console.log(res);

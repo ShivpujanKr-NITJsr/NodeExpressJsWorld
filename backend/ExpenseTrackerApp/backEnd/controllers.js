@@ -87,6 +87,11 @@ exports.getexpenses = (req, res, next) => {
 exports.delexpenses = (req, res, next) => {
     Expense.findAll({ where: { id: req.params.id } })
         .then(result => {
+            // User.update({totalexpense:})
+            User.findOne({where:{id:result[0].UserId}}).then(users=>{
+                const p=users.totalexpense-result[0].price;
+                users.update({totalexpense:p});
+            })
             result[0].destroy();
             res.json(result);
         }).catch(err => console.log(err))
@@ -104,6 +109,16 @@ exports.addexpense = (req, res, next) => {
     });
     Expense.create({ price: req.body.price, description: req.body.description, category: req.body.category, UserId: id })
         .then(result => {
+            User.findOne({where:{id:id}}).then(users=>{
+                let p;
+                if(users.totalexpense==null){
+                    p=result.price;
+                }else{
+                    p =parseFloat(users.totalexpense) +parseFloat(result.price);
+                }
+                
+                users.update({totalexpense:p});
+            })
             res.json(result)
         }).catch(err => console.log(err))
 }
@@ -245,21 +260,34 @@ exports.leaderboardShow= async(req,resp,next)=>{
     //         resp.status(200).json(results);
     //     })
     //     .catch(err => console.log(err));
-    try{
-        const userss=await User.findAll({
-            attributes :['id','name',[sequelize.fn('sum', sequelize.col('expenses.price')),'expense']],
-            include :[
-                {
-                    model: Expense,
-                    attributes:[]
-                }
-            ],
-            group:['user.id'],
-            order:[['expense','DESC']]
-        })
-        console.log(userss)
-        resp.status(200).json(userss)
+    // try{
+    //     const userss=await User.findAll({
+    //         attributes :['id','name',[sequelize.fn('sum', sequelize.col('expenses.price')),'expense']],
+    //         include :[
+    //             {
+    //                 model: Expense,
+    //                 attributes:[]
+    //             }
+    //         ],
+    //         group:['user.id'],
+    //         order:[['expense','DESC']]
+    //     })
+        // console.log(userss)
+        // resp.status(200).json(userss)
         
+    // }catch(err){
+    //     console.log(err);
+    //     resp.status(500).json(err)
+    // }
+
+    try{
+
+        const userss=await User.findAll({
+            attributes :['id','name','totalexpense'],
+            order:[['totalexpense','DESC']]
+        })
+        // console.log(userss)
+        resp.status(200).json(userss)
     }catch(err){
         console.log(err);
         resp.status(500).json(err)

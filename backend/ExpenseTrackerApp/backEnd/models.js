@@ -23,7 +23,8 @@ const User = sequelize.define('User',{
         type:Sequelize.STRING,
         allowNull:false
     },
-    ispremiumuser:Sequelize.STRING
+    ispremiumuser:Sequelize.STRING,
+    totalexpense:Sequelize.INTEGER
 })
 
 const Expense = sequelize.define('expense', {
