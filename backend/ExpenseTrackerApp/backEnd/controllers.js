@@ -84,20 +84,33 @@ exports.getexpenses = (req, res, next) => {
         }).catch(err => console.log(err))
 }
 
-exports.delexpenses = (req, res, next) => {
-    Expense.findAll({ where: { id: req.params.id } })
-        .then(result => {
-            // User.update({totalexpense:})
-            User.findOne({where:{id:result[0].UserId}}).then(users=>{
-                const p=users.totalexpense-result[0].price;
-                users.update({totalexpense:p});
-            })
-            result[0].destroy();
-            res.json(result);
-        }).catch(err => console.log(err))
+exports.delexpenses = async (req, res, next) => {
+    const t=await sequelize.transaction()
+
+    try{
+        const result= await Expense.findAll({ where: { id: req.params.id},transaction:t })
+        
+        const users=await User.findOne({where:{id:result[0].UserId},transaction: t})
+        await result[0].destroy({transaction: t});
+        const p=users.totalexpense-result[0].price;
+        await users.update({totalexpense:p}, {transaction: t});
+        
+        
+
+        await t.commit();
+        res.json(result);
+    }catch(err){
+        await t.rollback();
+        console.log(err)
+    }
+    
+            
+            
+           
+        
 }
 
-exports.addexpense = (req, res, next) => {
+exports.addexpense =async (req, res, next) => {
     const token = req.body.token;
     let id;
     jwt.verify(token, 'shhhhh', function (err, decoded) {
@@ -107,20 +120,33 @@ exports.addexpense = (req, res, next) => {
         }
         id = decoded;
     });
-    Expense.create({ price: req.body.price, description: req.body.description, category: req.body.category, UserId: id })
-        .then(result => {
-            User.findOne({where:{id:id}}).then(users=>{
-                let p;
-                if(users.totalexpense==null){
-                    p=result.price;
-                }else{
-                    p =parseFloat(users.totalexpense) +parseFloat(result.price);
-                }
-                
-                users.update({totalexpense:p});
-            })
-            res.json(result)
-        }).catch(err => console.log(err))
+    const t = await sequelize.transaction();
+
+    try {
+        const expenseResult = await Expense.create({
+            price: req.body.price,
+            description: req.body.description,
+            category: req.body.category,
+            UserId: id
+        }, { transaction: t });
+        const user = await User.findOne({ where: {id:id},transaction: t});
+        let p;
+        if (use.totalexpense === null) {
+            p = parseFloat(expenseResult.price);
+        } else {
+            p = parseFloat(user.totalexpense)+parseFloat(expenseResult.price);
+        }
+        await user.update({totalexpense: p}, { transaction: t });
+
+        await t.commit();
+        res.json(expenseResult);
+    } catch (err) {
+        console.error(err);
+
+        await t.rollback();
+        // res.status(500).json(err);
+    }
+
 }
 
 exports.premiumBuy = async (req, res, next) => {
