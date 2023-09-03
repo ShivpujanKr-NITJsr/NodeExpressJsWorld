@@ -33,6 +33,7 @@ function checking(event){
                 return true;
             }else{
                 return false
+
             }
             
         })
@@ -98,5 +99,5 @@ function validEmail(email) {
 }
 
 function validPassword(password) {
-    return password.value.length >= 6;
+    return password.value.length >= 1;
 }

@@ -21,4 +21,8 @@ router.get('/premiumroute/leaderboardshow',controllers.leaderboardShow)
 
 router.get('/password/forgotpassword/:email',controllers.forgotPasswd)
 
+router.get('/password/resetpassword/:uuidd',controllers.resetPassword)
+
+router.post('/password/resetpasswd',controllers.changingPasswd)
+
 module.exports=router;

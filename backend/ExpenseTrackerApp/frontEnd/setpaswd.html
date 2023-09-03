@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+</head>
+<body>
+
+    <div>
+
+        <form id="resetpasswd" onsubmit="return checks(event)"  >
+
+            <div >
+                <label for="password">Enter new password</label><br>
+                <input type="text" id="password" name="password" required>
+
+                <input type="hidden" name="uuidd" value="<%= uuidd %>">
+                <button type="submit">Submit</button>
+            </div>
+
+        </form>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+        function checks(event){
+            event.preventDefault()
+            const password = document.getElementById('password').value;
+            const uuidd = document.getElementsByName('uuidd')[0].value;
+        
+            const obj={
+                password,
+                uuidd
+            }
+            axios.post(`http://localhost:3000/password/resetpasswd`,obj)
+                .then(res=>{
+                    alert('password changed successfully')
+                    // document.getElementById('resetpasswd').action='./login.html'
+                    // document.getElementById('resetpasswd').method='post'
+                    // document.getElementById('resetpasswd').submit()
+                    // return true;
+                }).catch(err=>{
+                    console.log(err)
+                    alert('please fill all field correctly')
+                })
+            // alert('paswd changing')
+            // return true;
+        }</script>
+</body>
+</html>

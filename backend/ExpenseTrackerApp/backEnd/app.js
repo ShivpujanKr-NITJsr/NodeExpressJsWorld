@@ -1,7 +1,7 @@
 const express=require('express')
 const cors=require('cors')
 const app=express();
-const {Expense,User,Premium}=require('./models')
+const {Expense,User,Premium,ForgotPassword}=require('./models')
 const router =require('./routes');
 const sequelize = require('./databasecon');
 require('dotenv').config();
@@ -20,6 +20,9 @@ User.hasMany(Expense);
 User.hasMany(Premium)
 Expense.belongsTo(User);
 Premium.belongsTo(User)
+
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User)
 
 sequelize.sync({alter:true})
 

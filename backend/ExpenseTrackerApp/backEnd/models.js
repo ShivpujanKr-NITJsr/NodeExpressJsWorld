@@ -67,8 +67,19 @@ const Premium= sequelize.define('premium',{
     orderid:Sequelize.STRING,
     status:Sequelize.STRING,
 
+})
 
+const ForgotPassword=sequelize.define('forgotpassword',{
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        
+        allowNull: false
+    },
+    isActive:Sequelize.BOOLEAN,
+    uuid:Sequelize.STRING
 })
 
 // Premium.sync({force:true})
-module.exports={Expense,User,Premium};
+module.exports={Expense,User,Premium,ForgotPassword};

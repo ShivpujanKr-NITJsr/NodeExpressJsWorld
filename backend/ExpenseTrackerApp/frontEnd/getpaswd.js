@@ -10,6 +10,12 @@ function check(event){
         axios.get(`http://localhost:3000/password/forgotpassword/${obj.email}`)
             .then(res=>{
                 console.log(res)
+                if(res.data.msg==='ok'){
+
+                    const h=document.createElement('h5');
+                    h.textContent='Reset link is sent to your email';
+                    document.getElementById('email').appendChild(h);
+                }
             }).catch(err=>console.log(err))
     }
 }

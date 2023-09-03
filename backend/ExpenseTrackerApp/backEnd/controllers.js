@@ -1,4 +1,4 @@
-const { Expense, User, Premium } = require('./models')
+const { Expense, User, Premium ,ForgotPassword} = require('./models')
 const {createTransport}=require('nodemailer')
 const sequelize=require('./databasecon')
 require('dotenv').config();
@@ -6,7 +6,9 @@ const Sib=require('sib-api-v3-sdk')
 const {v4:uuidv4}=require('uuid')
 const jwt = require('jsonwebtoken')
 // const User=require('./models')
+const fs=require('fs');
 
+const path=require('path')
 const Razorpay = require('razorpay')
 
 const bcrypt = require('bcrypt')
@@ -89,6 +91,15 @@ exports.forgotPasswd= async (req,res,next)=>{
         const uuid = uuidv4();
         console.log(uuid);
         if (result!== null) {
+
+            const obj = {
+                UserId: result.id,
+                isActive: true,
+                uuid: uuid,
+            }
+            // console.log(obj);
+            const forgotResult = await ForgotPassword.create(obj);
+           
             const defaultClient = Sib.ApiClient.instance;
             const apiKey = defaultClient.authentications['api-key'];
             apiKey.apiKey = process.env.KEY_ID;
@@ -101,12 +112,12 @@ exports.forgotPasswd= async (req,res,next)=>{
                     pass: process.env.pass_id,
                 },
             });
-            // // http://localhost:3000/password/resetpassword/${uuid}
+            // // 
             const mailOptions = {
                 from: 'unknownhacker000001@gmail.com',
                 to: req.params.email,
                 subject: `Your subject`,
-                text: `Your reset link is -.................                
+                text: `Your reset link is -  http://localhost:3000/password/resetpassword/${uuid}       
         This is valid for 1 time only.`
             };
             transporter.sendMail(mailOptions, function (error, info) {
@@ -115,7 +126,7 @@ exports.forgotPasswd= async (req,res,next)=>{
                     res.status(500).json({message:' something went wrong'})
                 } else {
                     console.log('Email sent: ' + info.response);
-                    res.json({ message: "A reset link send to your email id" })
+                    res.json({ message: "A reset link send to your email id" ,success:true,msg:'ok'})
                 }
             });
             
@@ -126,6 +137,74 @@ exports.forgotPasswd= async (req,res,next)=>{
     } catch (error) {
         console.log(error);
     }
+}
+
+exports.resetPassword=(req,res,next)=>{
+
+    const uuidd=req.params.uuidd;
+    console.log(req)
+
+    ForgotPassword.findOne({where:{uuid:uuidd,isActive:true}})
+        .then(result=>{
+          
+            if(result){
+                // res.send('<div style="justify-content:center;"><form > <h1>Enter your new password</h1><br> <input type="text" name="password" id="password"> <button>Submit</button></form></div>')
+                // res.send({msg:path.join(__dirname,'../','frontEnd','getpaswd.html')})
+                fs.readFile(path.join(__dirname,'../','frontEnd','setpaswd.html'), 'utf8', (err, html) => {
+                    if (err) {
+                      console.error(err);
+                      res.status(500).send('An error occurred.');
+                    } else {
+                      // Replace <%= uuidd %> with the actual uuidd value
+                      const updatedHtml = html.replace('<%= uuidd %>', uuidd);
+                
+                      // Send the HTML content with the form and JavaScript
+                      res.send(updatedHtml);
+                    //   res.end(updatedHtml)
+                    }
+                });
+            }else{
+                res.status(404).json({message:'link is not valid',success:false})
+            }
+        }).catch(err=>{
+            console.log(err);
+            // res.json()
+        })
+}
+
+exports.changingPasswd=async (req,res,next)=>{
+    const uuidd=req.body.uuidd;
+    const paswd=req.body.password;
+    const t=await sequelize.transaction();
+    try{
+       
+
+        const fp=await ForgotPassword.findOne({where:{uuid:uuidd,isActive:true},transaction: t})
+
+        const user=await User.findOne({where:{id:fp.UserId},transaction: t});
+
+        await fp.update({isActive:false},{transaction: t})
+
+        bcrypt.hash(paswd, 10, async (err, hash) => {
+        user.update({password:hash},{transaction: t}).then(async result => {
+            // res.json({ message: 'Successfully created new user' })
+            await t.commit()
+
+            res.status(200).json({message:'your password is updated , now go to login page and login again',success:'ok'})
+        
+        })})
+
+        // await user.update({password:})
+        
+        
+    }catch(err){
+        await t.rollback()
+        console.log(err)
+        console.log('something went wrong')
+        res.status(503).json('got error while updating')
+    }
+
+    
 }
 
 exports.getexpenses = (req, res, next) => {
