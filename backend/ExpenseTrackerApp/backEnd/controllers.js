@@ -1,8 +1,9 @@
 const { Expense, User, Premium } = require('./models')
-
+const {createTransport}=require('nodemailer')
 const sequelize=require('./databasecon')
 require('dotenv').config();
-
+const Sib=require('sib-api-v3-sdk')
+const {v4:uuidv4}=require('uuid')
 const jwt = require('jsonwebtoken')
 // const User=require('./models')
 
@@ -75,6 +76,56 @@ exports.logging = (req, res, next) => {
         })
         .catch(err => console.log(err))
 
+}
+
+exports.forgotPasswd= async (req,res,next)=>{
+    try {
+        const result = await User.findOne({
+            where: {
+                email: req.params.email
+            }
+        })
+        console.log(result);
+        const uuid = uuidv4();
+        console.log(uuid);
+        if (result!== null) {
+            const defaultClient = Sib.ApiClient.instance;
+            const apiKey = defaultClient.authentications['api-key'];
+            apiKey.apiKey = process.env.KEY_ID;
+            console.log(process.env.KEY_ID);
+            const transporter = createTransport({
+                host: "smtp-relay.brevo.com",
+                port: 587,
+                auth: {
+                    user: "unknownhacker000001@gmail.com",
+                    pass: process.env.pass_id,
+                },
+            });
+            // // http://localhost:3000/password/resetpassword/${uuid}
+            const mailOptions = {
+                from: 'unknownhacker000001@gmail.com',
+                to: req.params.email,
+                subject: `Your subject`,
+                text: `Your reset link is -.................                
+        This is valid for 1 time only.`
+            };
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                    res.status(500).json({message:' something went wrong'})
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    res.json({ message: "A reset link send to your email id" })
+                }
+            });
+            
+        }
+        else {
+            res.json({message:"Invalid email id",status:501});
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 exports.getexpenses = (req, res, next) => {

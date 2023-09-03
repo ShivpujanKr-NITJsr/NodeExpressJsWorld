@@ -19,4 +19,6 @@ router.post('/premiumroute/updatetransactionstatus',Authorization,controllers.up
 
 router.get('/premiumroute/leaderboardshow',controllers.leaderboardShow)
 
+router.get('/password/forgotpassword/:email',controllers.forgotPasswd)
+
 module.exports=router;

@@ -5,6 +5,12 @@ const {Expense,User,Premium}=require('./models')
 const router =require('./routes');
 const sequelize = require('./databasecon');
 require('dotenv').config();
+
+const Sib=require('sib-api-v3-sdk')
+
+
+
+
 app.use(express.json())
 app.use(cors())
 
