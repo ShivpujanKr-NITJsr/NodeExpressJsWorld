@@ -25,4 +25,8 @@ router.get('/password/resetpassword/:uuidd',controllers.resetPassword)
 
 router.post('/password/resetpasswd',controllers.changingPasswd)
 
+router.get('/download',Authorization,controllers.downloading)
+
+router.get('/download/allurl',Authorization,controllers.allUrl)
+
 module.exports=router;

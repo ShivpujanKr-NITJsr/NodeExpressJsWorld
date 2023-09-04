@@ -81,5 +81,17 @@ const ForgotPassword=sequelize.define('forgotpassword',{
     uuid:Sequelize.STRING
 })
 
+const Filedownloaded=sequelize.define('filedownloaded',{
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        
+        allowNull: false
+    },
+    url:Sequelize.STRING,
+    date:Sequelize.DATE
+})
+
 // Premium.sync({force:true})
-module.exports={Expense,User,Premium,ForgotPassword};
+module.exports={Expense,User,Premium,ForgotPassword,Filedownloaded};

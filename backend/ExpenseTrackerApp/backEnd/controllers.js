@@ -1,4 +1,4 @@
-const { Expense, User, Premium ,ForgotPassword} = require('./models')
+const { Expense, User, Premium ,ForgotPassword,Filedownloaded} = require('./models')
 const {createTransport}=require('nodemailer')
 const sequelize=require('./databasecon')
 require('dotenv').config();
@@ -8,10 +8,13 @@ const jwt = require('jsonwebtoken')
 // const User=require('./models')
 const fs=require('fs');
 
+const AWS=require('aws-sdk')
+
 const path=require('path')
 const Razorpay = require('razorpay')
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const Sequelize = require('sequelize');
 
 exports.creating = (req, res, next) => {
     const uname = req.body.name;
@@ -261,7 +264,7 @@ exports.addexpense =async (req, res, next) => {
         }, { transaction: t });
         const user = await User.findOne({ where: {id:id},transaction: t});
         let p;
-        if (use.totalexpense === null) {
+        if (user.totalexpense === null) {
             p = parseFloat(expenseResult.price);
         } else {
             p = parseFloat(user.totalexpense)+parseFloat(expenseResult.price);
@@ -451,4 +454,81 @@ exports.leaderboardShow= async(req,resp,next)=>{
     
 
 }
+
+exports.downloading=async(req,res,next)=>{
+
+    try {
+        const uid=req.iduse;
+
+        const exp= await Expense.findAll({where:{UserId:uid}})
+
+        // console.log(exp)
+
+        const stringified=JSON.stringify(exp)
+
+        const filename=`Expenses${uid}/${new Date()}.txt`;
+
+        const fileurl=await uploadTos3(stringified,filename)
+      
+        await   Filedownloaded.create({url:fileurl,UserId:uid ,date:Sequelize.literal('CURRENT_TIMESTAMP')})
+        // console.log(fileurl)
+        res.status(200).json({fileurl,success:true})
+    }catch(err){
+        console.log(err)
+    }
+
+
+
+}
+
+async function  uploadTos3(data,filename){
+    const BUCKET_NAME=process.env.bucket_name
+    const IAM_USER_KEY=process.env.access_key
+    const IAM_SECRET_KEY=process.env.secret_key
+
+    let s3bucket= new AWS.S3({
+        accessKeyId:process.env.access_key,
+        secretAccessKey: process.env.secret_key,
+        
+
+    })
+    var params={
+        Bucket:process.env.bucket_name,
+        Key:filename,
+        Body:data,
+        ACL:'public-read'
+    }
+    return new Promise((res,rej)=>s3bucket.upload(params, (err, s3response)=>{
+        if(err){
+            console.log('something went wrong',err)
+            rej(err)
+        }else{
+            console.log('success',s3response)
+            res(s3response.Location);
+            
+        }
+    }))
+
+}
+
+exports.allUrl=(req,res,next)=>{
+
+    try{
+        const id=req.iduse;
+
+        Filedownloaded.findAll({where:{UserId:id}})
+        .then(file=>{
+            console.log(file)
+            res.status(200).json(file)
+        }).catch(err=>{
+            throw new Error(err)
+        })
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+}
+
+
 

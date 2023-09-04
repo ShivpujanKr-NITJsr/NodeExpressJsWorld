@@ -66,9 +66,20 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
                     leaderboard.textContent='show leaderboard'
                     leaderboard.style.width ='auto'
 
+                    const download=document.createElement('button');
+        
+                    download.style.marginLeft='20px'
+                    // leaderboard.style.border='1px black rounded'
+                    download.style.borderRadius='4px'
+                    download.textContent='download expenses file'
+                    download.style.width ='auto'
+                    
+                    download.addEventListener('click',download);
+
                     leaderboard.addEventListener('click',showLeaderBoard)
                     document.getElementById('premiumuser').appendChild(leaderboard)
-
+                    document.getElementById('premiumuser').appendChild(download)
+                    showurl()
                     alert('You are a premium user now')
                 }
             }
@@ -111,9 +122,24 @@ document.addEventListener("DOMContentLoaded",()=>{
         leaderboard.style.borderRadius='4px'
         leaderboard.textContent='show leaderboard'
         leaderboard.style.width ='auto'
+
+        const download=document.createElement('button');
         
+        download.style.marginLeft='20px'
+        // leaderboard.style.border='1px black rounded'
+        download.style.borderRadius='4px'
+        download.textContent='download expenses file'
+        download.style.width ='auto'
+        
+        download.addEventListener('click',downloading);
         leaderboard.addEventListener('click',showLeaderBoard)
+
         document.getElementById('premiumuser').appendChild(leaderboard)
+        document.getElementById('premiumuser').appendChild(download)
+
+        showurl()
+
+
 
     }
     
@@ -206,5 +232,61 @@ function showLeaderBoard(){
         }).catch(err=>console.log(err))
 
    
+}
+
+function downloading(){
+    const headers = {
+        'Authorization': localStorage.getItem('token'),
+        // 'Content-Type': 'application/json'
+      };
+    //   console.log(localStorage.getItem('token'))
+    axios.get("http://127.0.0.1:3000/download",{ headers })
+      .then((res)=>{
+        if(res.status===200){
+            var a =document.createElement('a');
+            a.href=res.data.fileurl;
+            // a.download='myexpense.csv'
+            console.log(res.data)
+            a.click();
+        }else{
+            throw new Error(res.data.message)
+        }
+      }).catch(err=>console.log(err))
+}
+
+function showurl(){
+
+    const durl=document.getElementById('downloadeurl');
+    while(durl.firstChild){
+        durl.removeChild(durl.firstChild);
+    }
+
+    durl.innerHTML=`<h5>list of url </h5>`
+    const headers = {
+        'Authorization': localStorage.getItem('token'),
+        // 'Content-Type': 'application/json'
+      };
+    //   console.log(localStorage.getItem('token'))
+    axios.get("http://127.0.0.1:3000/download/allurl",{ headers })
+      .then((res)=>{
+        if(res.status===200){
+
+            for(let i=0;i<res.data.length;i++){
+                console.log(res.data)
+                let a =document.createElement('a');
+                a.href=res.data[i].url;
+                a.textContent=`expense data downloaded in ${res.data[i].date},click again to download`
+                durl.appendChild(a);
+                const br=document.createElement('br')
+                durl.appendChild(br)
+            }
+            
+        }else{
+            throw new Error(res.data.message)
+        }
+      }).catch(err=>console.log(err))
+
+
+
 }
 
