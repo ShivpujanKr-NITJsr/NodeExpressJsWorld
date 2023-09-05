@@ -210,10 +210,54 @@ exports.changingPasswd=async (req,res,next)=>{
     
 }
 
+async function  nextt(userid,ofset,itemsPerPage){
+
+    try{
+        const res= await Expense.findAll({ where: { UserId: userid }
+            ,
+            limit:itemsPerPage,
+            offset:ofset
+            
+         })
+        
+        if (res.length>0){
+            console.log(res)
+            return true;
+        }
+        // console.log(false)
+        // console.log(err)
+        return false;
+    }catch(err){
+        console.log(err)
+        return false;
+    }
+    
+   
+}
+
 exports.getexpenses = (req, res, next) => {
-    Expense.findAll({ where: { UserId: req.iduse } })
-        .then(result => {
-            res.json(result)
+    const itemsPerPage=5;
+    const of=((req.query.page||1)-1)
+    Expense.findAll({ where: { UserId: req.iduse }
+    ,offset:of*itemsPerPage,
+    limit:itemsPerPage
+ })
+        .then(async result => {
+            let pre;let nex;let prev;let nextv;
+            if(of===0){
+                pre=false;
+            }else{
+                pre=true;
+                prev=of;
+            }
+            const ans= await nextt(req.iduse,(of+1)*itemsPerPage,itemsPerPage)
+            if(ans===true){
+                nex=true;nextv=Number(of)+Number(2);
+            }else{
+                nex=false;
+            }
+            console.log(prev,nextv,nex)
+            res.json({result,pre,nex,nextv,prev})
         }).catch(err => console.log(err))
 }
 
@@ -518,7 +562,7 @@ exports.allUrl=(req,res,next)=>{
 
         Filedownloaded.findAll({where:{UserId:id}})
         .then(file=>{
-            console.log(file)
+            // console.log(file)
             res.status(200).json(file)
         }).catch(err=>{
             throw new Error(err)

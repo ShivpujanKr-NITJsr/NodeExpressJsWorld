@@ -15,11 +15,14 @@ function saveToDataBaseStorage(event){
     axios.post("http://127.0.0.1:3000/expenses/add-expense",obj)
         .then((response)=>{
             showUserOnScreen(response.data);
+            
             // console.log(response);
             console.log('showing leaderboard')
             if(document.getElementById('leaderboard').childElementCount!=0){
                 showLeaderBoard()
             }
+            let e={target:{value:1}};
+            getexpenseList(e)
         })
         .catch(err=>{
             document.body.innerHTML=err;
@@ -148,21 +151,126 @@ document.addEventListener("DOMContentLoaded",()=>{
         'Authorization': localStorage.getItem('token'),
         // 'Content-Type': 'application/json'
       };
-   
-    axios.get("http://127.0.0.1:3000/expenses/getexpense",{ headers })
-        .then((res)=>{
 
+    //   const page= 
+    const p=document.getElementById('listofitems')
+
+    while(p.firstChild){
+        p.removeChild(p.firstChild);
+    }
+    axios.get("http://127.0.0.1:3000/expenses/getexpense?page=1",{ headers })
+        .then((res)=>{
+            if(res.data.length===0){
+                alert('no more data found')
+                return ;
+            }
             console.log(res)
 
-            for(var i=0; i<res.data.length;i++){
-                showUserOnScreen(res.data[i])
+            for(var i=0; i<res.data.result.length;i++){
+                showUserOnScreen(res.data.result[i])
 
             }
             // showLeaderBoard()
+            const next=document.createElement('button');
+            const prev=document.createElement('button');
+            console.log(res.data.prev+' - '+res.data.nextv)
+
+            // const p=document.getElementById('listofitems')
+
+            // while(p.firstChild){
+            //     p.removeChild(p.firstChild);
+            // }
+            if(res.data.pre===true){
+                prev.textContent=`${res.data.prev}`
+                prev.value=`${res.data.prev}`
+                prev.classList='pagination'
+                prev.addEventListener('click',getexpenseList)
+                document.getElementById('listofitems').appendChild(prev)
+                // document.querySelectorAll('.pagination').style.display='inline-block'
+            }
+            if(res.data.nex===true){
+                // 
+                next.textContent=`${res.data.nextv}`
+                next.classList='pagination'
+                next.value=`${res.data.nextv}`
+                next.addEventListener('click',getexpenseList)
+                document.getElementById('listofitems').appendChild(next)
+                // document.querySelectorAll('.pagination').style.display='inline-block'
+            }
+          
+
+            const paginationButtons = document.querySelectorAll('.pagination');
+                paginationButtons.forEach((button) => {
+                button.style.display = 'inline-block';
+            });
+            
         })
         .catch(err=>console.log(err))
    
 })
+
+function getexpenseList(event){
+    // console.log(event.target.value)
+    const headers = {
+        'Authorization': localStorage.getItem('token'),
+        // 'Content-Type': 'application/json'
+      };
+      const p=document.getElementById('listofitems')
+
+    while(p.firstChild){
+        p.removeChild(p.firstChild);
+    }
+    const page=event.target.value
+    axios.get(`http://127.0.0.1:3000/expenses/getexpense?page=${page}`,{ headers })
+        .then((res)=>{
+
+            if(res.data.length===0){
+                alert('no more data found')
+                return ;
+            }
+            console.log(res)
+
+            for(var i=0; i<res.data.result.length;i++){
+                showUserOnScreen(res.data.result[i])
+
+            }
+            // showLeaderBoard()
+            const next=document.createElement('button');
+            const prev=document.createElement('button');
+            console.log(res.data.prev+' - '+res.data.nextv)
+
+            // const p=document.getElementById('listofitems')
+
+            // while(p.firstChild){
+            //     p.removeChild(p.firstChild);
+            // }
+            if(res.data.pre===true){
+                prev.textContent=`${res.data.prev}`
+                prev.value=`${res.data.prev}`
+                prev.classList='pagination'
+                prev.addEventListener('click',getexpenseList)
+                document.getElementById('listofitems').appendChild(prev)
+                // document.querySelectorAll('.pagination').style.display='inline-block'
+            }
+            if(res.data.nex===true){
+                // 
+                next.textContent=`${res.data.nextv}`
+                next.classList='pagination'
+                next.value=`${res.data.nextv}`
+                next.addEventListener('click',getexpenseList)
+                document.getElementById('listofitems').appendChild(next)
+                // document.querySelectorAll('.pagination').style.display='inline-block'
+            }
+          
+
+            const paginationButtons = document.querySelectorAll('.pagination');
+                paginationButtons.forEach((button) => {
+                button.style.display = 'inline-block';
+            });
+            
+        })
+        .catch(err=>console.log(err))
+}
 
 
 function showUserOnScreen(obj){
@@ -190,6 +298,8 @@ function showUserOnScreen(obj){
                 if(document.getElementById('leaderboard').innerHTML!=''){
                     showLeaderBoard()
                 }
+                e.target.value=1;
+                getexpenseList(e)
             })
             .catch(err=>console.log(err));
       
@@ -240,18 +350,19 @@ function downloading(){
         // 'Content-Type': 'application/json'
       };
     //   console.log(localStorage.getItem('token'))
-    axios.get("http://127.0.0.1:3000/download",{ headers })
-      .then((res)=>{
-        if(res.status===200){
-            var a =document.createElement('a');
-            a.href=res.data.fileurl;
-            // a.download='myexpense.csv'
-            console.log(res.data)
-            a.click();
-        }else{
-            throw new Error(res.data.message)
-        }
-      }).catch(err=>console.log(err))
+    // axios.get("http://127.0.0.1:3000/download",{ headers })
+    //   .then((res)=>{
+    //     if(res.status===200){
+    //         var a =document.createElement('a');
+    //         a.href=res.data.fileurl;
+    //         // a.download='myexpense.csv'
+    //         console.log(res.data)
+    //         a.click();
+    //     }else{
+    //         throw new Error(res.data.message)
+    //     }
+    //   }).catch(err=>console.log(err))
+    alert('server is closed where file was being uploaded')
 }
 
 function showurl(){
@@ -272,7 +383,7 @@ function showurl(){
         if(res.status===200){
 
             for(let i=0;i<res.data.length;i++){
-                console.log(res.data)
+                // console.log(res.data)
                 let a =document.createElement('a');
                 a.href=res.data[i].url;
                 a.textContent=`expense data downloaded in ${res.data[i].date},click again to download`
