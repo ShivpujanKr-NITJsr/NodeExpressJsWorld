@@ -14,9 +14,15 @@ function check(event){
 
                     const h=document.createElement('h5');
                     h.textContent='Reset link is sent to your email';
-                    document.getElementById('email').appendChild(h);
+                    document.getElementById('emailpass').appendChild(h);
+                    alert('Reset password link sent to your email')
                 }
-            }).catch(err=>console.log(err))
+            }).catch(err=>{
+                console.log(err)
+                alert('error occured, invalid link')
+            }
+                
+            )
     }
 }
 

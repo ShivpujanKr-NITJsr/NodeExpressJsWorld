@@ -345,8 +345,6 @@ exports.premiumBuy = async (req, res, next) => {
                 });
             });
         };
-
-    
         const order = await createOrder();
 
         // Create a Premium record and handle errors

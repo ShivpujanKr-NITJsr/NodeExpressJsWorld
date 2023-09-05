@@ -109,6 +109,7 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
                   alert('Error: Something went wrong while paying');
                 }
               })
+              
         })
         .catch(err=>console.log(err))
 })
