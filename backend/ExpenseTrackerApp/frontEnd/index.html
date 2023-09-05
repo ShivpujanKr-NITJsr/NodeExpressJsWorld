@@ -40,7 +40,16 @@
 
     </form>
     <div>
-      <!-- <button id="buypremium" >Buy Premium</button> -->
+      <!-- <button id="pageshow" >Buy Premium</button>
+       -->
+       <label for="pagenumber">Page Views:</label>
+       <select name="pagenumber" id="pagenumber" type="radio" >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+       </select>
     </div>
 
     <button id="rzp-button1" >Pay with Razorpay</button>
@@ -54,7 +63,7 @@
     <ul id="leaderboard"  style="margin-left: 40px;"></ul>
 
     <ul id="downloadeurl" style="margin-left: 40px; margin-top:30px"></ul>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="index.js">

@@ -221,7 +221,7 @@ async function  nextt(userid,ofset,itemsPerPage){
          })
         
         if (res.length>0){
-            console.log(res)
+            // console.log(res)
             return true;
         }
         // console.log(false)
@@ -236,7 +236,9 @@ async function  nextt(userid,ofset,itemsPerPage){
 }
 
 exports.getexpenses = (req, res, next) => {
-    const itemsPerPage=5;
+    // const itemsPerPage=req.headers.pagenumber;
+    console.log(req.headers.pagenumber)
+    const itemsPerPage=Number(req.headers.pagenumber);
     const of=((req.query.page||1)-1)
     Expense.findAll({ where: { UserId: req.iduse }
     ,offset:of*itemsPerPage,
@@ -256,7 +258,7 @@ exports.getexpenses = (req, res, next) => {
             }else{
                 nex=false;
             }
-            console.log(prev,nextv,nex)
+            // console.log(prev,nextv,nex)
             res.json({result,pre,nex,nextv,prev})
         }).catch(err => console.log(err))
 }

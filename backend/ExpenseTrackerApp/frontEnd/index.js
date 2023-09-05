@@ -37,8 +37,10 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
     const headers = {
         'Authorization': localStorage.getItem('token'),
         // 'Content-Type': 'application/json'
+        // 'pagenumber':document.getElementById('pagenumber').value,
       };
     //   console.log(localStorage.getItem('token'))
+
     axios.get("http://127.0.0.1:3000/premiumroute/buypremium",{ headers })
         .then((res)=>{
 
@@ -146,13 +148,15 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     }
     
-
+    
     const headers = {
         'Authorization': localStorage.getItem('token'),
         // 'Content-Type': 'application/json'
+        'pagenumber':document.getElementById('pagenumber').value,
       };
 
-    //   const page= 
+    //   const page=
+    console.log(document.getElementById('pagenumber').value) 
     const p=document.getElementById('listofitems')
 
     while(p.firstChild){
@@ -208,12 +212,20 @@ document.addEventListener("DOMContentLoaded",()=>{
         .catch(err=>console.log(err))
    
 })
+document.getElementById('pagenumber').addEventListener('change',()=>{
+    let e={target:{value:1}}
+
+    // console.log(document.querySelectorAll('.pagination')[0].firstChild)
+    getexpenseList(e);
+}
+)
 
 function getexpenseList(event){
     // console.log(event.target.value)
     const headers = {
         'Authorization': localStorage.getItem('token'),
         // 'Content-Type': 'application/json'
+        'pagenumber':document.getElementById('pagenumber').value,
       };
       const p=document.getElementById('listofitems')
 
