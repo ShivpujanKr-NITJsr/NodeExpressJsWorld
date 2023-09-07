@@ -1,10 +1,11 @@
 const express=require('express')
 const cors=require('cors')
 const app=express();
+require('dotenv').config();
 const {Expense,User,Premium,ForgotPassword,Filedownloaded}=require('./models')
 const router =require('./routes');
 const sequelize = require('./databasecon');
-require('dotenv').config();
+
 const helmet=require('helmet')
 const Sib=require('sib-api-v3-sdk')
 const morgan=require('morgan')
@@ -23,7 +24,7 @@ app.use(helmet())
 app.use(express.json())
 app.use(cors())
 
-app.use('/',router)
+app.use('/',router)           ///////////////////////////////////
 
 User.hasMany(Expense);
 User.hasMany(Premium)

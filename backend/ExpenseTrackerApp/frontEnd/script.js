@@ -20,8 +20,9 @@ function checking(event){
 
         axios.post(url,obj)
         .then(res=>{
-            document.getElementById('error-msg').textContent=``
-            console.log(res.data.msg)
+            console.log(res)
+            document.getElementById('error-msg').textContent=``        
+            console.log(res)
             alert(res.data.msg)
             if(res.data.success==true){
                 document.getElementById('form').action='./index.html';

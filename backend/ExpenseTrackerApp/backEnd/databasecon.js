@@ -1,8 +1,10 @@
 const sequelize=require('sequelize')
 
-const Sequelize=new sequelize('practice_db','root','root',{
-    host:'localhost',
-    dialect:'mysql'
+// require('dotenv').configure()
+const Sequelize=new sequelize(process.env.DB_NAME,process.env.USER,process.env.DB_PASSWD,{
+    host:process.env.MY_HOST,
+    dialect:'mysql',
+    logging:false
 })
 
 
