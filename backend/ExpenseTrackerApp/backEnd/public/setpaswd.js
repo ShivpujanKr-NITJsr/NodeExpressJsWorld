@@ -10,7 +10,7 @@ function checks(event){
         password,
         uuidd
     }
-    // axios.post(`http://localhost:3000/password/resetpasswd`,obj)
+    // axios.post(`http://16.171.27.114:3000/password/resetpasswd`,obj)
     //     .then(res=>{
     //         alert('password changed successfully')
     //         document.getElementById('resetpasswd').action='./login.html'

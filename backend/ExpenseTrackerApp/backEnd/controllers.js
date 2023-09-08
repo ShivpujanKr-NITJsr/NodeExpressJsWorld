@@ -120,7 +120,7 @@ exports.forgotPasswd= async (req,res,next)=>{
                 from: 'unknownhacker000001@gmail.com',
                 to: req.params.email,
                 subject: `Your subject`,
-                text: `Your reset link is -  http://localhost:3000/password/resetpassword/${uuid}       
+                text: `Your reset link is -  http://16.171.27.114:3000/password/resetpassword/${uuid}       
         This is valid for 1 time only.`
             };
             transporter.sendMail(mailOptions, function (error, info) {

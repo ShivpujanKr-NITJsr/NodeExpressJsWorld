@@ -12,7 +12,7 @@ function saveToDataBaseStorage(event){
         category,
         token
     }
-    axios.post("http://127.0.0.1:3000/expenses/add-expense",obj)
+    axios.post("http://16.171.27.114:3000/expenses/add-expense",obj)
         .then((response)=>{
             showUserOnScreen(response.data);
             
@@ -41,7 +41,7 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
       };
     //   console.log(localStorage.getItem('token'))
 
-    axios.get("http://127.0.0.1:3000/premiumroute/buypremium",{ headers })
+    axios.get("http://16.171.27.114:3000/premiumroute/buypremium",{ headers })
         .then((res)=>{
 
             // console.log(res.data.order.id)
@@ -52,7 +52,7 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
 
                 'handler':async function(response){
 
-                    const premium=await axios.post(`http://localhost:3000/premiumroute/updatetransactionstatus`,{
+                    const premium=await axios.post(`http://16.171.27.114:3000/premiumroute/updatetransactionstatus`,{
                         order_id:options.order_id,
                         payment_id: response.razorpay_payment_id,
                     },{headers:{'Authorization': localStorage.getItem('token')}})
@@ -98,7 +98,7 @@ document.getElementById('rzp-button1').addEventListener('click',(event)=>{
         
             
                 try {
-                  const cancelRes = await axios.post(`http://localhost:3000/premiumroute/updatetransactionstatus`, {
+                  const cancelRes = await axios.post(`http://16.171.27.114:3000/premiumroute/updatetransactionstatus`, {
                     order_id:options.order_id,
                     suc:true
                 }, { headers });
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     while(p.firstChild){
         p.removeChild(p.firstChild);
     }
-    axios.get("http://127.0.0.1:3000/expenses/getexpense?page=1",{ headers })
+    axios.get("http://16.171.27.114:3000/expenses/getexpense?page=1",{ headers })
         .then((res)=>{
             if(res.data.length===0){
                 alert('no more data found')
@@ -234,7 +234,7 @@ function getexpenseList(event){
         p.removeChild(p.firstChild);
     }
     const page=event.target.value
-    axios.get(`http://127.0.0.1:3000/expenses/getexpense?page=${page}`,{ headers })
+    axios.get(`http://16.171.27.114:3000/expenses/getexpense?page=${page}`,{ headers })
         .then((res)=>{
 
             if(res.data.length===0){
@@ -303,7 +303,7 @@ function showUserOnScreen(obj){
         
         const tim=obj.time;
 
-        axios.delete(`http://127.0.0.1:3000/expenses/deleteexpense/${obj.id}`)
+        axios.delete(`http://16.171.27.114:3000/expenses/deleteexpense/${obj.id}`)
             .then(res=>{
                 console.log('done')
                 // showLeaderBoard()
@@ -340,7 +340,7 @@ function showLeaderBoard(){
     
     // leader.classList='012'
     // console.log('showing leaderboard');
-    axios.get('http://localhost:3000/premiumroute/leaderboardshow')
+    axios.get('http://16.171.27.114:3000/premiumroute/leaderboardshow')
         .then(res=>{
 
             let ans=res.data;
@@ -363,7 +363,7 @@ function downloading(){
         // 'Content-Type': 'application/json'
       };
     //   console.log(localStorage.getItem('token'))
-    // axios.get("http://127.0.0.1:3000/download",{ headers })
+    // axios.get("http://16.171.27.114:3000/download",{ headers })
     //   .then((res)=>{
     //     if(res.status===200){
     //         var a =document.createElement('a');
@@ -391,7 +391,7 @@ function showurl(){
         // 'Content-Type': 'application/json'
       };
     //   console.log(localStorage.getItem('token'))
-    axios.get("http://127.0.0.1:3000/download/allurl",{ headers })
+    axios.get("http://16.171.27.114:3000/download/allurl",{ headers })
       .then((res)=>{
         if(res.status===200){
 

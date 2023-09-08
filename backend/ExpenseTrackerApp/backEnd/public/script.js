@@ -1,5 +1,5 @@
 
-const url='http://localhost:3000/user/signup'
+const url='http://16.171.27.114:3000/user/login'
 function checking(event){
     event.preventDefault();
     if(!check(event)){
@@ -8,36 +8,48 @@ function checking(event){
         console.log('not filled correctly')
     }else{
         
-        const name = document.getElementById('username');
+       
         const email = document.getElementById('email');
         const password = document.getElementById('password');
         const obj={
-            name:name.value,email:email.value,password:password.value
+            email:email.value,password:password.value
         }
-        name.value=''
-        email.value='';password.value='';
-        // console.log('filled correctly',obj.email)
+       
+      
         
 
         axios.post(url,obj)
         .then(res=>{
-            console.log('created user successfully')
-            document.getElementById('error-msg').textContent=''
-            document.getElementById('form').action='./login.html'
-            //
-            document.getElementById('form').method='get'
-            document.getElementById('form').submit()
-            return true;
+            console.log(res)
+            document.getElementById('error-msg').textContent=``        
+            console.log(res)
+            alert(res.data.msg)
+            if(res.data.success==true){
+                document.getElementById('form').action='./index.html';
+                document.getElementById('form').method='get'
+                document.getElementById('form').submit();
+                localStorage.setItem('token',res.data.token);
+                localStorage.setItem('ispremiumuser',res.data.ispremiumuser);
+                console.log(res.data.ispremiumuser)
+                return true;
+            }else{
+                return false
+
+            }
+            
         })
         .catch(err=>{
-            console.log('i got error while posting')
+            console.log('i got error while logging')
             
             document.getElementById('error-msg').textContent=`${err}`
-            return false;
+
+            alert(`${err}`)
+            return false
+            
         }
         )
         
-        // return true;
+       
     }
 }
 
@@ -47,9 +59,7 @@ function check(event) {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
 
-    name.addEventListener('input',()=>{
-        document.querySelector('.username-err').style.display='none'
-    })
+   
     email.addEventListener('input',()=>{
         if(validEmail(email)){
             document.querySelector('.email-err').style.display='none'
@@ -62,12 +72,7 @@ function check(event) {
         document.querySelector('.password-err').style.display='none'
     })
 
-    if (!validName(name)) {
-        document.querySelector('.username-err').innerHTML="please enter username";
-        document.querySelector('.username-err').style.display='block'
-        event.preventDefault();
-        return false;
-    }
+   
     if (!validEmail(email)) {
         document.querySelector('.email-err').innerHTML="please enter email";
         document.querySelector('.email-err').style.display='block'
@@ -84,10 +89,6 @@ function check(event) {
     return true;
 }
 
-function validName(name) {
-    return name.value.trim().length > 0;
-}
-
 function validEmail(email) {
 
     if(email.value.trim().length>3){
@@ -99,5 +100,5 @@ function validEmail(email) {
 }
 
 function validPassword(password) {
-    return password.value.length >= 6;
+    return password.value.length >= 1;
 }

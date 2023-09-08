@@ -7,7 +7,7 @@ function check(event){
         email:event.target.email.value
     }
     if(isValid(event.target.email)){
-        axios.get(`http://localhost:3000/password/forgotpassword/${obj.email}`)
+        axios.get(`http://16.171.27.114:3000/password/forgotpassword/${obj.email}`)
             .then(res=>{
                 console.log(res)
                 if(res.data.msg==='ok'){
